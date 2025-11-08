@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Будешь моей девушкой? 💖</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+      font-family: 'Comic Sans MS', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 2em;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    button {
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 30px;
+      margin: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    #yes {
+      background-color: #ff4081;
+      color: white;
+    }
+    #no {
+      background-color: #f8f8f8;
+      color: #333;
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <h1>Будешь моей девушкой? 💘</h1>
+  <div>
+    <button id="yes">Да ❤️</button>
+    <button id="no">Нет 😅</button>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById('yes');
+    const noBtn = document.getElementById('no');
+
+    yesBtn.addEventListener('click', () => {
+      document.body.innerHTML = '<h1>Я знал 😘</h1>';
+      if (window.Telegram?.WebApp) {
+        Telegram.WebApp.sendData('yes');
+      }
+    });
+
+    noBtn.addEventListener('mouseover', () => {
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 100);
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    });
+
+    // Telegram WebApp адаптация
+    if (window.Telegram?.WebApp) {
+      Telegram.WebApp.expand();
+    }
+  </script>
+</body>
+</html>
