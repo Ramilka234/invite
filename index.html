@@ -18,6 +18,7 @@
       flex-direction: column;
       text-align: center;
       color: #fff;
+      touch-action: manipulation;
     }
 
     h1 {
@@ -57,6 +58,8 @@
       background-color: #fff;
       color: #333;
       z-index: 2;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
     .heart {
@@ -85,12 +88,22 @@
     const noBtn = document.getElementById('no');
 
     // Центрируем кнопки
-    yesBtn.style.top = '50%';
-    yesBtn.style.left = '50%';
-    yesBtn.style.transform = 'translate(-60%, -50%)';
-    noBtn.style.top = '50%';
-    noBtn.style.left = 'calc(50% + 120px)';
-    noBtn.style.transform = 'translate(-50%, -50%)';
+    function positionButtons() {
+      const buttonsWidth = 280; // примерная ширина обеих кнопок с отступом
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      yesBtn.style.top = '50%';
+      yesBtn.style.left = '50%';
+      yesBtn.style.transform = 'translate(-60%, -50%)';
+      
+      noBtn.style.top = '50%';
+      noBtn.style.left = 'calc(50% + 120px)';
+      noBtn.style.transform = 'translate(-50%, -50%)';
+    }
+
+    positionButtons();
+    window.addEventListener('resize', positionButtons);
 
     yesBtn.addEventListener('click', () => {
       document.body.innerHTML = `
@@ -107,16 +120,48 @@
       const maxX = window.innerWidth - noBtn.offsetWidth - padding;
       const maxY = window.innerHeight - noBtn.offsetHeight - padding;
 
-      const x = Math.random() * maxX + padding / 2;
-      const y = Math.random() * maxY + padding / 2;
+      // Создаем безопасную зону вокруг кнопки "Да"
+      const yesRect = yesBtn.getBoundingClientRect();
+      const safeZonePadding = 40;
+      
+      let x, y;
+      let attempts = 0;
+      const maxAttempts = 20;
+      
+      do {
+        x = Math.random() * maxX + padding / 2;
+        y = Math.random() * maxY + padding / 2;
+        attempts++;
+        
+        // Проверяем, не пересекается ли новая позиция с безопасной зоной кнопки "Да"
+        const overlapsYes = (
+          x < yesRect.right + safeZonePadding &&
+          x + noBtn.offsetWidth > yesRect.left - safeZonePadding &&
+          y < yesRect.bottom + safeZonePadding &&
+          y + noBtn.offsetHeight > yesRect.top - safeZonePadding
+        );
+        
+        // Если не пересекается или превышено количество попыток, выходим
+        if (!overlapsYes || attempts >= maxAttempts) break;
+        
+      } while (true);
 
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
+      noBtn.style.transform = 'translate(0, 0)'; // убираем предыдущее преобразование
     }
 
     // События для мыши и касания
     noBtn.addEventListener('mouseover', moveButton);
-    noBtn.addEventListener('touchstart', moveButton);
+    noBtn.addEventListener('touchstart', function(e) {
+      e.preventDefault(); // предотвращаем стандартное поведение касания
+      moveButton();
+    }, { passive: false });
+
+    // Предотвращаем долгое нажатие на мобильных устройствах
+    noBtn.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
 
     // Плавающие сердечки
     function createHeart() {
