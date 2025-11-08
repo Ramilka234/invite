@@ -1,51 +1,91 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Будешь моей девушкой? 💖</title>
   <style>
-    body {
-      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
-      font-family: 'Comic Sans MS', sans-serif;
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-    }
-    h1 {
-      font-size: 2em;
+      flex-direction: column;
       text-align: center;
       color: #fff;
-      margin-bottom: 40px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      transition: background 0.3s ease;
     }
+
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      margin-bottom: 50px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.25);
+      line-height: 1.3;
+    }
+
+    .buttons {
+      position: relative;
+      width: 90%;
+      max-width: 300px;
+      height: 120px;
+    }
+
     button {
       font-size: 1.3rem;
       border: none;
-      border-radius: 12px;
-      padding: 12px 30px;
-      margin: 10px;
+      border-radius: 14px;
+      padding: 16px 32px;
       cursor: pointer;
       transition: all 0.2s ease;
+      width: 140px;
     }
+
     #yes {
       background-color: #ff4081;
       color: white;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
+
     #no {
-      background-color: #f8f8f8;
+      background-color: #fff;
       color: #333;
       position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+    }
+
+    /* Анимация сердечек */
+    @keyframes floatHearts {
+      0% {
+        transform: translateY(100vh) scale(0.3);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .heart {
+      position: fixed;
+      bottom: -10px;
+      font-size: 20px;
+      animation: floatHearts 4s linear infinite;
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
   <h1>Будешь моей девушкой? 💘</h1>
-  <div>
+
+  <div class="buttons">
     <button id="yes">Да ❤️</button>
     <button id="no">Нет 😅</button>
   </div>
@@ -55,23 +95,47 @@
     const noBtn = document.getElementById('no');
 
     yesBtn.addEventListener('click', () => {
-      document.body.innerHTML = '<h1>Я знал 😘</h1>';
+      document.body.innerHTML = `
+        <h1>Я знал 😘</h1>
+        <p style="font-size:1.3rem;">Теперь это официально 💞</p>
+      `;
       if (window.Telegram?.WebApp) {
         Telegram.WebApp.sendData('yes');
       }
     });
 
-    noBtn.addEventListener('mouseover', () => {
-      const x = Math.random() * (window.innerWidth - 100);
-      const y = Math.random() * (window.innerHeight - 100);
+    noBtn.addEventListener('touchstart', moveButton);
+    noBtn.addEventListener('mouseover', moveButton);
+
+    function moveButton() {
+      const x = Math.random() * (window.innerWidth - 150);
+      const y = Math.random() * (window.innerHeight - 150);
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
-    });
+    }
+
+    // ❤️ Добавляем плавающие сердечки
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "💖";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+    setInterval(createHeart, 800);
 
     // Telegram WebApp адаптация
     if (window.Telegram?.WebApp) {
       Telegram.WebApp.expand();
+
+      // Поддержка тёмной темы
+      const theme = Telegram.WebApp.colorScheme;
+      if (theme === "dark") {
+        document.body.style.background = "linear-gradient(135deg, #2b2b2b, #3c3c3c)";
+        document.body.style.color = "#fff";
+      }
     }
   </script>
 </body>
-</html>
