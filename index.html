@@ -37,6 +37,7 @@
       font-size: 1.3rem;
       cursor: pointer;
       transition: top 0.25s, left 0.25s;
+      margin-bottom: 80px;
     }
 
     #yes {
@@ -71,8 +72,8 @@
 <body>
   <h1>Будешь моей девушкой? 💘</h1>
   <button id="yes">Да ❤️</button>
-  <button id="no">Нет 😅</button>
-
+  <button id="no">Нет 🙄</button>
+<img src="el1te.gif" style="width:80%; max-width:280px;">
   <script>
     const yesBtn = document.getElementById('yes');
     const noBtn = document.getElementById('no');
@@ -98,12 +99,22 @@
     window.addEventListener('resize', safePositionButtons);
 
     yesBtn.addEventListener('click', () => {
-      document.body.innerHTML = `
-        <h1>Я знал 😍</h1>
-        <p style="font-size:1.3rem;">Теперь это официально 💞</p>
-      `;
-      if (window.Telegram?.WebApp) Telegram.WebApp.sendData('yes');
-    });
+document.body.innerHTML = `
+   <h1 style="margin-bottom:10px;">Я знал 😍</h1>
+  <p style="font-size:1.3rem;">Теперь это официально 💞</p>
+  <div id="gif-container" style="
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  ">
+    <img src="ronaldo-cristiano-ronaldo.gif" style="width:250px; height:250px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+    <img src="who-me.gif" style="width:250px; height:250px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+  </div>
+`;
+  if (window.Telegram?.WebApp) Telegram.WebApp.sendData('yes');
+});
 
     function moveNoButton() {
       const padding = 30;
