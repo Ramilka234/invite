@@ -18,21 +18,21 @@
       flex-direction: column;
       text-align: center;
       color: #fff;
-      transition: background 0.3s ease;
     }
 
     h1 {
       font-size: clamp(1.8rem, 5vw, 2.4rem);
-      margin-bottom: 50px;
+      margin-bottom: 40px;
       text-shadow: 2px 2px 8px rgba(0,0,0,0.25);
-      line-height: 1.3;
     }
 
     .buttons {
       position: relative;
-      width: 90%;
-      max-width: 300px;
-      height: 120px;
+      width: 100%;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     button {
@@ -42,7 +42,7 @@
       padding: 16px 32px;
       cursor: pointer;
       transition: all 0.2s ease;
-      width: 140px;
+      position: absolute;
     }
 
     #yes {
@@ -50,27 +50,13 @@
       color: white;
       font-weight: bold;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1;
     }
 
     #no {
       background-color: #fff;
       color: #333;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: 0;
-    }
-
-    /* Анимация сердечек */
-    @keyframes floatHearts {
-      0% {
-        transform: translateY(100vh) scale(0.3);
-        opacity: 0;
-      }
-      100% {
-        transform: translateY(-10vh) scale(1);
-        opacity: 1;
-      }
+      z-index: 2;
     }
 
     .heart {
@@ -80,11 +66,15 @@
       animation: floatHearts 4s linear infinite;
       opacity: 0.6;
     }
+
+    @keyframes floatHearts {
+      0% { transform: translateY(100vh) scale(0.3); opacity: 0; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
   <h1>Будешь моей девушкой? 💘</h1>
-
   <div class="buttons">
     <button id="yes">Да ❤️</button>
     <button id="no">Нет 😅</button>
@@ -93,6 +83,14 @@
   <script>
     const yesBtn = document.getElementById('yes');
     const noBtn = document.getElementById('no');
+
+    // Центрируем кнопки
+    yesBtn.style.top = '50%';
+    yesBtn.style.left = '50%';
+    yesBtn.style.transform = 'translate(-60%, -50%)';
+    noBtn.style.top = '50%';
+    noBtn.style.left = 'calc(50% + 120px)';
+    noBtn.style.transform = 'translate(-50%, -50%)';
 
     yesBtn.addEventListener('click', () => {
       document.body.innerHTML = `
@@ -104,17 +102,23 @@
       }
     });
 
-    noBtn.addEventListener('touchstart', moveButton);
-    noBtn.addEventListener('mouseover', moveButton);
-
     function moveButton() {
-      const x = Math.random() * (window.innerWidth - 150);
-      const y = Math.random() * (window.innerHeight - 150);
+      const padding = 80; // запас от краёв
+      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+      const x = Math.random() * maxX + padding / 2;
+      const y = Math.random() * maxY + padding / 2;
+
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
     }
 
-    // ❤️ Добавляем плавающие сердечки
+    // События для мыши и касания
+    noBtn.addEventListener('mouseover', moveButton);
+    noBtn.addEventListener('touchstart', moveButton);
+
+    // Плавающие сердечки
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
@@ -129,13 +133,10 @@
     // Telegram WebApp адаптация
     if (window.Telegram?.WebApp) {
       Telegram.WebApp.expand();
-
-      // Поддержка тёмной темы
-      const theme = Telegram.WebApp.colorScheme;
-      if (theme === "dark") {
+      if (Telegram.WebApp.colorScheme === "dark") {
         document.body.style.background = "linear-gradient(135deg, #2b2b2b, #3c3c3c)";
-        document.body.style.color = "#fff";
       }
     }
   </script>
 </body>
+</html>
