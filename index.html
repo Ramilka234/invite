@@ -102,6 +102,7 @@
 document.body.innerHTML = `
    <h1 style="margin-bottom:10px;">Я знал 😍</h1>
   <p style="font-size:1.3rem;">Теперь это официально 💞</p>
+  <p style="font-size:1.3rem;">Так прикольно, что мы прикольные)</p>
   <div id="gif-container" style="
     display: flex;
     justify-content: center;
@@ -113,7 +114,12 @@ document.body.innerHTML = `
     <img src="who-me.gif" style="width:250px; height:250px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
   </div>
 `;
-  if (window.Telegram?.WebApp) Telegram.WebApp.sendData('yes');
+  if (window.Telegram?.WebApp) {
+        Telegram.WebApp.sendData('yes');  // Отправка данных
+        console.log("WebApp data 'yes' отправлено");
+        Telegram.WebApp.close();          // Закрываем WebApp
+    }
+
 });
 
     function moveNoButton() {
@@ -140,13 +146,11 @@ document.body.innerHTML = `
       noBtn.style.top = `${newY}px`;
     }
 
-    // Реакция на касание
     noBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
       moveNoButton();
     }, { passive: false });
 
-    // Реакция на наведение (для ПК)
     noBtn.addEventListener('mouseenter', moveNoButton);
 
     function createHeart() {
